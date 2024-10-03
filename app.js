@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 });
 
 // Allow requests from http://localhost:3000
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'https://sandile-portfolio.web.app/contact' }));
 
 app.options('/submit-form', cors());
 
