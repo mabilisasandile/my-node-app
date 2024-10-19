@@ -11,8 +11,13 @@ app.get('/', (req, res) => {
   res.send('Welcome to my dashboard!');
 });
 
-// Allow requests from http://localhost:3000
-app.use(cors({ origin: 'https://sandile-portfolio.web.app' }));
+// Allow requests from:
+// app.use(cors({ origin: 'https://sandile-portfolio.web.app' }));
+app.use(cors({ origin: ['https://sandile-portfolio.web.app', 
+                        'http://localhost:3000',
+                        'http://127.0.0.1:5500', 
+                        'https://sandile-mabilisa.netlify.app'
+                       ] }));
 
 app.options('/submit-form', cors());
 
