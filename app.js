@@ -74,35 +74,56 @@ app.post('/submit-form', async (req, res) => {
 
 
 // Open AI Chat post method
-app.post('/chat', async (req, res) => {
-  try {
-    const question = req.body.message;
+// app.post('/chat', async (req, res) => {
+//   try {
+//     const question = req.body.message;
 
-    const context = `
-    You are a chatbot assistant for Sandile Mabilisa.
-    Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
-    Projects: Portfolio, E-learning, Booking App.
-    Education: National Diploma in IT - Software Development.
-    Career Goal: Cloud Engineer.
-    `;
+//     const context = `
+//     You are a chatbot assistant for Sandile Mabilisa.
+//     Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
+//     Projects: Portfolio, E-learning, Booking App.
+//     Education: National Diploma in IT - Software Development.
+//     Career Goal: Cloud Engineer.
+//     `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: context },
-        { role: "user", content: question }
-      ]
-    });
+//     const response = await openai.chat.completions.create({
+//       model: "gpt-4",
+//       messages: [
+//         { role: "system", content: context },
+//         { role: "user", content: question }
+//       ]
+//     });
 
-    const reply = response.choices[0].message.content;
-    res.json({ reply });
+//     const reply = response.choices[0].message.content;
+//     res.json({ reply });
 
-  } catch (error) {
-    console.error("OpenAI Error:", error);
-    res.status(500).json({ reply: "Sorry, the chatbot is unavailable at the moment." });
-  }
+//   } catch (error) {
+//     console.error("OpenAI Error:", error);
+//     res.status(500).json({ reply: "Sorry, the chatbot is unavailable at the moment." });
+//   }
+// });
+
+const knowledgeBase = {
+  name: "Sandile Mabilisa",
+  skills: ["JavaScript", "React", "Node.js", "Express.js", "Python", "Django"],
+  projects: ["Portfolio website", "E-learning platform", "Booking app"],
+  education: "National Diploma in IT - Software Development",
+  goals: "To become a cloud engineer"
+};
+
+app.post('/chat', (req, res) => {
+  const question = req.body.message.toLowerCase();
+
+  let reply = "I'm not sure how to answer that.";
+
+  if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
+  else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
+  else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
+  else if (question.includes("education")) reply = `I studied ${knowledgeBase.education}.`;
+  else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
+
+  res.json({ reply });
 });
-
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
