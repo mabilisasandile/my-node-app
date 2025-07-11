@@ -15,31 +15,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-
-// Open AI Chat post method
-app.post('/chat', async (req, res) => {
-  const question = req.body.message;
-
-  const context = `
-  You are a chatbot assistant for Sandile Mabilisa.
-  Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
-  Projects: Portfolio, E-learning, Booking App.
-  Education: National Diploma in IT - Software Development.
-  Career Goal: Cloud Engineer.
-  `;
-
-  const response = await openai.chat.completions.create({
-  model: "gpt-4",
-  messages: [
-    { role: "system", content: context },
-    { role: "user", content: question }
-  ]
-});
-
-  const reply = response.data.choices[0].message.content;
-  res.json({ reply });
-});
-
 app.get('/', (req, res) => {
   res.send('Welcome to my dashboard!');
 });
@@ -53,6 +28,7 @@ app.use(cors({ origin: ['https://sandile-portfolio.web.app',
                        ] }));
 
 app.options('/submit-form', cors());
+app.options('/chat', cors());
 
 // Send the email
 app.post('/submit-form', async (req, res) => {
@@ -88,6 +64,31 @@ app.post('/submit-form', async (req, res) => {
     console.error('Error sending email:', error);
     res.status(500).send('Error sending email');
   }
+});
+
+
+// Open AI Chat post method
+app.post('/chat', async (req, res) => {
+  const question = req.body.message;
+
+  const context = `
+  You are a chatbot assistant for Sandile Mabilisa.
+  Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
+  Projects: Portfolio, E-learning, Booking App.
+  Education: National Diploma in IT - Software Development.
+  Career Goal: Cloud Engineer.
+  `;
+
+  const response = await openai.chat.completions.create({
+  model: "gpt-4",
+  messages: [
+    { role: "system", content: context },
+    { role: "user", content: question }
+  ]
+});
+
+  const reply = response.data.choices[0].message.content;
+  res.json({ reply });
 });
 
 
