@@ -105,10 +105,12 @@ app.post('/submit-form', async (req, res) => {
 
 const knowledgeBase = {
   name: "Sandile Mabilisa",
-  skills: ["JavaScript", "React", "Node.js", "Express.js", "Python", "Django"],
-  projects: ["Portfolio website", "E-learning platform", "Booking app"],
+  skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
+  projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
   education: "National Diploma in IT - Software Development",
-  goals: "To become a cloud engineer"
+  goals: "To become a Software Engineer",
+  age: "I am 32 years old",
+  location: "I live in Pretoria, Gauteng, South Africa."
 };
 
 app.post('/chat', (req, res) => {
@@ -121,6 +123,8 @@ app.post('/chat', (req, res) => {
   else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
   else if (question.includes("education")) reply = `I studied ${knowledgeBase.education}.`;
   else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
+  else if (question.includes("age") || question.includes("old")) reply = knowledgeBase.age;
+  else if (question.includes("location") || question.includes("address")) reply = knowledgeBase.location;
 
   res.json({ reply });
 });
