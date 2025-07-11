@@ -50,9 +50,9 @@ app.post('/submit-form', async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'mabilisasandile@gmail.com',
-      pass: 'mqyi iljm qznv bocd',
-    },
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
+    }
   });
 
   const mailOptions = {
@@ -75,26 +75,32 @@ app.post('/submit-form', async (req, res) => {
 
 // Open AI Chat post method
 app.post('/chat', async (req, res) => {
-  const question = req.body.message;
+  try {
+    const question = req.body.message;
 
-  const context = `
-  You are a chatbot assistant for Sandile Mabilisa.
-  Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
-  Projects: Portfolio, E-learning, Booking App.
-  Education: National Diploma in IT - Software Development.
-  Career Goal: Cloud Engineer.
-  `;
+    const context = `
+    You are a chatbot assistant for Sandile Mabilisa.
+    Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
+    Projects: Portfolio, E-learning, Booking App.
+    Education: National Diploma in IT - Software Development.
+    Career Goal: Cloud Engineer.
+    `;
 
-  const response = await openai.chat.completions.create({
-  model: "gpt-4",
-  messages: [
-    { role: "system", content: context },
-    { role: "user", content: question }
-  ]
-});
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: context },
+        { role: "user", content: question }
+      ]
+    });
 
-  const reply = response.data.choices[0].message.content;
-  res.json({ reply });
+    const reply = response.choices[0].message.content;
+    res.json({ reply });
+
+  } catch (error) {
+    console.error("OpenAI Error:", error);
+    res.status(500).json({ reply: "Sorry, the chatbot is unavailable at the moment." });
+  }
 });
 
 
