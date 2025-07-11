@@ -129,8 +129,8 @@ app.post('/chat', (req, res) => {
   else if (question.includes("age") || question.includes("old")) reply = knowledgeBase.age;
   else if (question.includes("location") || question.includes("address")) reply = knowledgeBase.location;
   else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
-  else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.experience;
-  else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.experience;
+  else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
+  else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.email;
 
   res.json({ reply });
 });
