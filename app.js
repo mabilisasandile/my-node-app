@@ -3,10 +3,26 @@ const app = express();
 const port = 4000;
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const cors = require('cors');
 require('dotenv').config();
 
+
+// Allow requests from:
+const cors = require('cors');
+const allowedOrigins = [
+  'https://sandile-portfolio.web.app',
+  'http://localhost:3000',
+  'http://127.0.0.1:5500',
+  'https://sandile-mabilisa.netlify.app',
+  'https://fluffy-orbit-x6gp6wpv9rqc5pj-5500.app.github.dev'
+];
+
+app.use(cors({ origin: allowedOrigins }));
+
+app.options('/submit-form', cors());
+app.options('/chat', cors());
+
 app.use(bodyParser.json());
+
 
 // AI Config
 const OpenAI = require("openai");
@@ -19,16 +35,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to my dashboard!');
 });
 
-// Allow requests from:
-app.use(cors({ origin: ['https://sandile-portfolio.web.app', 
-                        'http://localhost:3000',
-                        'http://127.0.0.1:5500', 
-                        'https://sandile-mabilisa.netlify.app',
-                        'https://fluffy-orbit-x6gp6wpv9rqc5pj-5500.app.github.dev'
-                       ] }));
-
-app.options('/submit-form', cors());
-app.options('/chat', cors());
 
 // Send the email
 app.post('/submit-form', async (req, res) => {
