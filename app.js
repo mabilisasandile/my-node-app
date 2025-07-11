@@ -108,9 +108,12 @@ const knowledgeBase = {
   skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
   projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
   education: "National Diploma in IT - Software Development",
+  experience: "I have 2 years of work experience. For more details, download my CV by clicking on the 'Download CV' button from home screen.",
   goals: "To become a Software Engineer",
   age: "I am 32 years old",
-  location: "I live in Pretoria, Gauteng, South Africa."
+  location: "I live in Pretoria, Gauteng, South Africa.",
+  phone: "You can call me at +2773 490 8931",
+  email: "Here is my email address: mabilisasandile@gmail.com"
 };
 
 app.post('/chat', (req, res) => {
@@ -125,6 +128,9 @@ app.post('/chat', (req, res) => {
   else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
   else if (question.includes("age") || question.includes("old")) reply = knowledgeBase.age;
   else if (question.includes("location") || question.includes("address")) reply = knowledgeBase.location;
+  else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
+  else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.experience;
+  else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.experience;
 
   res.json({ reply });
 });
