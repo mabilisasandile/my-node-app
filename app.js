@@ -103,14 +103,33 @@ app.post('/submit-form', async (req, res) => {
 //   }
 // });
 
+
+const birthDate = new Date("1993-01-22");
+
+// Function to calculate age
+function calculateAge(birthDate) {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const dayDiff = today.getDate() - birthDate.getDate();
+
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;
+  }
+
+  return age;
+}
+
+
 const knowledgeBase = {
   name: "Sandile Mabilisa",
   skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
   projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
   education: "National Diploma in IT - Software Development",
-  experience: "I have 2 years of work experience. For more details, download my CV by clicking on the 'Download CV' button from home screen.",
+  experience: "I have over a year of work experience in the software development field. For more details, download my CV by clicking the 'Download CV' button on home screen or landing page.",
   goals: "To become a Software Engineer",
-  age: "I am 32 years old",
+  age: calculateAge(birthDate),
   location: "I live in Pretoria, Gauteng, South Africa.",
   phone: "You can call me at +2773 490 8931",
   email: "Here is my email address: mabilisasandile@gmail.com"
@@ -126,7 +145,7 @@ app.post('/chat', (req, res) => {
   else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
   else if (question.includes("education")) reply = `I studied ${knowledgeBase.education}.`;
   else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
-  else if (question.includes("age") || question.includes("old")) reply = knowledgeBase.age;
+  else if (question.includes("age") || question.includes("old")) reply = `I am ${knowledgeBase.age} years old`;
   else if (question.includes("location") || question.includes("address")) reply = knowledgeBase.location;
   else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
   else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
