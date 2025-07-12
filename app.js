@@ -124,6 +124,7 @@ function calculateAge(birthDate) {
 
 const knowledgeBase = {
   name: "Sandile Mabilisa",
+  about: "I am a Software Developer with over one year of work experience. I possess a Diploma in IT Software Development. I have a strong passion of crafting innovative solutions through web and mobile app development. With hands-on experience gained during my time at mLab and Bavelile Consultants, I have honed my skills in both front-end and back-end development.",
   skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
   projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
   education: "National Diploma in IT - Software Development",
@@ -139,19 +140,20 @@ const knowledgeBase = {
 app.post('/chat', (req, res) => {
   const question = req.body.message.toLowerCase();
 
-  let reply = "I'm not sure how to answer that. For more details, please download my CV by clicking the 'Download CV' button on home screen or landing page.";
+  let reply = `I'm not sure how to answer that. For more details, please view or download my Resume/CV at: ${knowledgeBase.resume}.`;
 
   if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
   else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
   else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
   else if (question.includes("education") || question.includes("qualification")) reply = `I studied ${knowledgeBase.education}.`;
+  else if (question.includes("about") || question.includes("profile")) reply = knowledgeBase.about;
   else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
   else if (question.includes("age") || question.includes("old")) reply = `I am ${knowledgeBase.age} years old`;
   else if (question.includes("location") || question.includes("address") || question.includes("live") || question.includes("stay")) reply = knowledgeBase.location;
   else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
   else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
   else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.email;
-  else if (question.includes("resume") || question.includes("cv")) reply = `Download my Resume/CV here: ${knowledgeBase.resume}`;
+  else if (question.includes("resume") || question.includes("cv")) reply = `View or Download my Resume/CV here: ${knowledgeBase.resume}`;
 
   res.json({ reply });
 });
