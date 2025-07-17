@@ -101,7 +101,7 @@ const knowledgeBase = {
 app.post('/chat', (req, res) => {
   const question = req.body.message.toLowerCase();
 
-  let reply = `I'm not sure how to answer that. For more details, please view or download my Resume/CV at: ${knowledgeBase.resume}.`;
+  let reply = `I'm not sure how to answer that. You can <a href="${knowledgeBase.resume}" target="_blank" rel="noopener noreferrer">view/download my Resume</a>.`;
 
   if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
   else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
@@ -114,7 +114,10 @@ app.post('/chat', (req, res) => {
   else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
   else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
   else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.email;
-  else if (question.includes("resume") || question.includes("cv")) reply = `View or Download my Resume/CV here: ${knowledgeBase.resume}`;
+  else if (question.includes("resume") || question.includes("cv")) {
+    reply = `You can <a href="${knowledgeBase.resume}" target="_blank" rel="noopener noreferrer">view/download my Resume here</a>.`;
+  }
+
 
   res.json({ reply });
 });
