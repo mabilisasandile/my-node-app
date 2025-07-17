@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require("axios");
 const app = express();
 const port = 4000;
 const bodyParser = require('body-parser');
@@ -22,14 +23,6 @@ app.options('/submit-form', cors());
 app.options('/chat', cors());
 
 app.use(bodyParser.json());
-
-
-// AI Config
-const OpenAI = require("openai");
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 app.get('/', (req, res) => {
   res.send('Welcome to my dashboard!');
@@ -73,37 +66,6 @@ app.post('/submit-form', async (req, res) => {
 });
 
 
-// Open AI Chat post method
-// app.post('/chat', async (req, res) => {
-//   try {
-//     const question = req.body.message;
-
-//     const context = `
-//     You are a chatbot assistant for Sandile Mabilisa.
-//     Skills: HTML5, CSS, JavaScript, React, Express.js, Python, Django, C#, MySQL, PostgreSQL, MongoDB, Firebase, Microsoft Azure.
-//     Projects: Portfolio, E-learning, Booking App.
-//     Education: National Diploma in IT - Software Development.
-//     Career Goal: Cloud Engineer.
-//     `;
-
-//     const response = await openai.chat.completions.create({
-//       model: "gpt-4",
-//       messages: [
-//         { role: "system", content: context },
-//         { role: "user", content: question }
-//       ]
-//     });
-
-//     const reply = response.choices[0].message.content;
-//     res.json({ reply });
-
-//   } catch (error) {
-//     console.error("OpenAI Error:", error);
-//     res.status(500).json({ reply: "Sorry, the chatbot is unavailable at the moment." });
-//   }
-// });
-
-
 const birthDate = new Date("1993-01-22");
 
 // Function to calculate age
@@ -122,40 +84,86 @@ function calculateAge(birthDate) {
 }
 
 
-const knowledgeBase = {
-  name: "Sandile Mabilisa",
-  about: "I am a Software Developer with over one year of work experience. I possess a Diploma in IT Software Development. I have a strong passion of crafting innovative solutions through web and mobile app development. With hands-on experience gained during my time at mLab and Bavelile Consultants, I have honed my skills in both front-end and back-end development.",
-  skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
-  projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
-  education: "National Diploma in IT - Software Development",
-  experience: "I have over a year of work experience in the software development field. For more details, download my CV at: https://sandile-mabilisa.netlify.app/assets/Resume_Sandile.pdf",
-  goals: "To become a Software Engineer",
-  age: calculateAge(birthDate),
-  location: "I live in Pretoria, Gauteng, South Africa.",
-  phone: "You can call me at +2773 490 8931",
-  email: "Here is my email address: mabilisasandile@gmail.com",
-  resume: "https://sandile-mabilisa.netlify.app/assets/Resume_Sandile.pdf"
+// const knowledgeBase = {
+//   name: "Sandile Mabilisa",
+//   about: "I am a Software Developer with over one year of work experience. I possess a Diploma in IT Software Development. I have a strong passion of crafting innovative solutions through web and mobile app development. With hands-on experience gained during my time at mLab and Bavelile Consultants, I have honed my skills in both front-end and back-end development.",
+//   skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
+//   projects: ["Portfolio website", "Smart Campus Service Web App", "E-Commerce Web App", "E-learning platform", "Hotel Booking app", "and many more"],
+//   education: "National Diploma in IT - Software Development",
+//   experience: "I have over a year of work experience in the software development field. For more details, download my CV at: https://sandile-mabilisa.netlify.app/assets/Resume_Sandile.pdf",
+//   goals: "To become a Software Engineer",
+//   age: calculateAge(birthDate),
+//   location: "I live in Pretoria, Gauteng, South Africa.",
+//   phone: "You can call me at +2773 490 8931",
+//   email: "Here is my email address: mabilisasandile@gmail.com",
+//   resume: "https://sandile-mabilisa.netlify.app/assets/Resume_Sandile.pdf"
+// };
+
+// app.post('/chat', (req, res) => {
+//   const question = req.body.message.toLowerCase();
+
+//   let reply = `I'm not sure how to answer that. For more details, please view or download my Resume/CV at: ${knowledgeBase.resume}.`;
+
+//   if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
+//   else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
+//   else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
+//   else if (question.includes("education") || question.includes("qualification")) reply = `I studied ${knowledgeBase.education}.`;
+//   else if (question.includes("about") || question.includes("profile")) reply = knowledgeBase.about;
+//   else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
+//   else if (question.includes("age") || question.includes("old")) reply = `I am ${knowledgeBase.age} years old`;
+//   else if (question.includes("location") || question.includes("address") || question.includes("live") || question.includes("stay")) reply = knowledgeBase.location;
+//   else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
+//   else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
+//   else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.email;
+//   else if (question.includes("resume") || question.includes("cv")) reply = `View or Download my Resume/CV here: ${knowledgeBase.resume}`;
+
+//   res.json({ reply });
+// });
+
+
+
+// Use Deepseek API for Chatbot
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+const systemMessage = {
+  role: "system",
+  content: `
+You are a helpful AI assistant for Sandile Mabilisa, a South African Web Developer.
+Here is some background:
+- Name: Sandile Mabilisa
+- Location: Pretoria, Gauteng, South Africa
+- Skills: JavaScript, C# .NET, React, Node.js, Express.js, MongoDB, SQL, MySql, HTML, CSS
+- Experience: Has built full stack apps, login systems, CRUD interfaces, and real-time features.
+- Projects: Portfolio website, University smart service web portal, Notification system, E-Commerce Web App, Learning Management System
+- Interests: Cloud engineering, AI tools, frontend development, backend develoment
+When users ask about Sandile's experience, skills, or work, provide helpful and clear answers.
+  `,
 };
 
-app.post('/chat', (req, res) => {
-  const question = req.body.message.toLowerCase();
+app.post("/chat", async (req, res) => {
+  const { prompt } = req.body;
 
-  let reply = `I'm not sure how to answer that. For more details, please view or download my Resume/CV at: ${knowledgeBase.resume}.`;
+  try {
+    const response = await axios.post(
+      "https://api.deepseek.com/v1/chat/completions",
+      {
+        model: "deepseek-chat",
+        messages: [ systemMessage, { role: "user", content: prompt } ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+        },
+      }
+    );
 
-  if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
-  else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
-  else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
-  else if (question.includes("education") || question.includes("qualification")) reply = `I studied ${knowledgeBase.education}.`;
-  else if (question.includes("about") || question.includes("profile")) reply = knowledgeBase.about;
-  else if (question.includes("goal") || question.includes("dream")) reply = knowledgeBase.goals;
-  else if (question.includes("age") || question.includes("old")) reply = `I am ${knowledgeBase.age} years old`;
-  else if (question.includes("location") || question.includes("address") || question.includes("live") || question.includes("stay")) reply = knowledgeBase.location;
-  else if (question.includes("experience") || question.includes("work")) reply = knowledgeBase.experience;
-  else if (question.includes("phone") || question.includes("contact")) reply = knowledgeBase.phone;
-  else if (question.includes("email") || question.includes("message")) reply = knowledgeBase.email;
-  else if (question.includes("resume") || question.includes("cv")) reply = `View or Download my Resume/CV here: ${knowledgeBase.resume}`;
-
-  res.json({ reply });
+    const reply = response.data.choices[0].message.content;
+    res.json({ reply });
+  } catch (error) {
+    console.error("Deepseek API Error:", error.response?.data || error.message);
+    res.status(500).json({ reply: "Sorry, something went wrong." });
+  }
 });
 
 app.listen(port, () => {
