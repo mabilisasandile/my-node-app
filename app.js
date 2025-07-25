@@ -84,6 +84,8 @@ function calculateAge(birthDate) {
 
 
 const knowledgeBase = {
+  greeting: "Hello, how are you today?",
+  reply: "I am ok. Thanks for visiting my page!",
   name: "Sandile Mabilisa",
   about: "I am a Software Developer with over one year of work experience. I possess a Diploma in IT Software Development. I have a strong passion of crafting innovative solutions through web and mobile app development. With hands-on experience gained during my time at mLab and Bavelile Consultants, I have honed my skills in both front-end and back-end development.",
   skills: ["HTML5", "CSS", "JavaScript", "React", "Express.js", "Python", "Django", "C#", "MySQL", "PostgreSQL", "MongoDB", "Firebase", "Microsoft Azure"],
@@ -104,6 +106,8 @@ app.post('/chat', (req, res) => {
   let reply = `I'm not sure how to answer that. You can <a href="${knowledgeBase.resume}" target="_blank" rel="noopener noreferrer">view/download my Resume</a>.`;
 
   if (question.includes("name")) reply = `My name is ${knowledgeBase.name}.`;
+  else if (question.includes("hi") || question.includes("hello")) reply = `${knowledgeBase.greeting}.`;
+  else if (question.includes("how") || question.includes("how are you")) reply = `${knowledgeBase.reply}.`;
   else if (question.includes("skill")) reply = `My skills include: ${knowledgeBase.skills.join(", ")}.`;
   else if (question.includes("project")) reply = `I've worked on: ${knowledgeBase.projects.join(", ")}.`;
   else if (question.includes("education") || question.includes("qualification")) reply = `I studied ${knowledgeBase.education}.`;
