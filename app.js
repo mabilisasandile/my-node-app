@@ -16,10 +16,22 @@ const allowedOrigins = [
   'https://fluffy-orbit-x6gp6wpv9rqc5pj-5500.app.github.dev'
 ];
 
-app.use(cors({ origin: allowedOrigins }));
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
+};
 
-app.options('/submit-form', cors());
-app.options('/chat', cors());
+app.use(cors(corsOptions));
+
 
 app.use(bodyParser.json());
 
