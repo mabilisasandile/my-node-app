@@ -50,10 +50,11 @@ app.post('/submit-form', async (req, res) => {
   });
 
   const mailOptions = {
-    from: userEmail,
-    to: 'mabilisasandile@gmail.com',
-    subject: userSubject,
-    text: `Message from my portfolio app!\n\nSender message: ${userMessage} \n\nFrom: ${userEmail} \n\nName: ${userName}`,
+  from: process.env.GMAIL_USER,
+  replyTo: userEmail,
+  to: 'mabilisasandile@gmail.com',
+  subject: userSubject,
+  text: `Message from my portfolio app!\n\nSender message: ${userMessage} \n\nFrom: ${userEmail} \n\nName: ${userName}`,
   };
 
   try {
