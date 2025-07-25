@@ -38,6 +38,8 @@ app.post('/submit-form', async (req, res) => {
 
   //View form data
   console.log("FormData: ", FormData);
+  console.log('GMAIL_USER:', process.env.GMAIL_USER);
+  console.log('GMAIL_PASS:', process.env.GMAIL_PASS ? 'Loaded' : 'Not loaded');
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
